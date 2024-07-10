@@ -6,20 +6,28 @@ class Game:
         super().__init__()
         self.question = ""
 
+    def is_solved(self, guessNumber):
+        return self.question == guessNumber
+
+    def get_success_game_result(self):
+        return GameResult(True, 3, 0)
+
     def guess(self, guessNumber):
         self.assert_illegal_value(guessNumber)
-        if self.question == guessNumber:
-            return GameResult(True, 3, 0)
+        if self.is_solved(guessNumber):
+            return self.get_success_game_result()
         else:
-            strike = 0
-            ball = 0
-            for i in range(len(self.question)):
-                if self.question.find(guessNumber[i]) == i:
-                    strike += 1
-                elif self.question.find(guessNumber[i]) > -1:
-                    ball += 1
+            return self.get_unresolved_game_result(guessNumber)
 
-            return GameResult(False, strike, ball)
+    def get_unresolved_game_result(self, guessNumber):
+        strike = 0
+        ball = 0
+        for i in range(len(self.question)):
+            if self.question.find(guessNumber[i]) == i:
+                strike += 1
+            elif self.question.find(guessNumber[i]) > -1:
+                ball += 1
+        return GameResult(False, strike, ball)
 
     def assert_illegal_value(self, guessNumber):
         if guessNumber is None:
